@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+  "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aswan-anil/atronox.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aswan-anil/atronox/issues"
+  },
+  "homepage": "https://github.com/aswan-anil/atronox#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0",
+    "zod": "^4.0.5"
+  }
+}
