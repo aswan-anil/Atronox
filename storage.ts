@@ -1,4 +1,4 @@
-import { newsletters, type Newsletter, type InsertNewsletter } from "@shared/schema";
+import type { Newsletter, InsertNewsletter } from "./schema";
 
 export interface IStorage {
   createNewsletterSubscription(newsletter: InsertNewsletter): Promise<Newsletter>;
@@ -30,7 +30,7 @@ export class MemStorage implements IStorage {
     const newsletter: Newsletter = {
       ...insertNewsletter,
       id,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     
     this.newsletters.set(id, newsletter);
