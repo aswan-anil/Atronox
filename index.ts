@@ -1,6 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { serveStatic } from "./vite";
+
 
 const app = express();
 app.use(express.json());
@@ -47,7 +47,7 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  serveStatic(app);
+
 
   // Use Heroku's assigned port if available, otherwise default to 5000
   const port = process.env.PORT ? Number(process.env.PORT) : 5000;
