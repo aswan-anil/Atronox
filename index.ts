@@ -6,6 +6,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// CORS setup to allow frontend on Firebase and Render
+import cors from "cors";
+const allowedOrigins = [
+  "https://atronox-launchpad.web.app",
+  "https://atronox.onrender.com"
+];
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
