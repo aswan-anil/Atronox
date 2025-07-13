@@ -1,8 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
 import { insertNewsletterSchema } from "./schema";
 import { z } from "zod";
+import { db } from "./firebase-admin";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Newsletter subscription endpoint
@@ -10,18 +10,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertNewsletterSchema.parse(req.body);
       
-      // Check if email already exists
-      const existingSubscription = await storage.getNewsletterByEmail(validatedData.email);
-      if (existingSubscription) {
-        return res.status(409).json({ 
-          message: "Email is already subscribed to our newsletter" 
+      // Check if email already exists in Firestore
+      const existingQuery = await db.collection("newsletter_subscriptions")
+        .where("email", "==", validatedData.email)
+        .limit(1)
+        .get();
+      if (!existingQuery.empty) {
+        return res.status(409).json({
+          message: "Email is already subscribed to our newsletter"
         });
       }
 
-      const newsletter = await storage.createNewsletterSubscription(validatedData);
-      res.status(201).json({ 
+      // Store in Firestore
+      let docRef;
+      try {
+        docRef = await db.collection("newsletter_subscriptions").add({
+          email: validatedData.email,
+          createdAt: new Date().toISOString(),
+        });
+      } catch (firestoreError) {
+        console.error("Failed to write to Firestore:", firestoreError);
+        return res.status(500).json({
+          message: "Internal server error"
+        });
+      }
+
+      res.status(201).json({
         message: "Successfully subscribed to newsletter",
-        id: newsletter.id 
+        id: docRef.id
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
