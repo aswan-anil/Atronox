@@ -1,6 +1,10 @@
+import { readFileSync } from "fs";
 import { initializeApp, cert, getApps, App } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import serviceAccount from "./firebase-service-account.json";
+
+const serviceAccount = JSON.parse(
+  readFileSync("/etc/secrets/firebase-service-account.json", "utf8")
+);
 
 let app: App;
 if (!getApps().length) {
